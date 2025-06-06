@@ -53,4 +53,8 @@ Each folder represents a **standalone authorization strategy**, implemented as a
 ## 📁 Folder Structure
 
 Each folder is an isolated project with its own React + backend setup:
-![image](https://github.com/user-attachments/assets/648c0768-4481-48ca-a6cf-db47d71c1a85)
+auth-method/
+├── README.md # Brief explanation of the method
+├── client/ # React frontend (Vite + TS)
+├── server/ # Backend (Express / Firebase / NestJS)
+└── .env.example # Environment variable sample
