@@ -8,12 +8,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Routes
+const authRoutes = require("./routes/auth");
+const protectedRoutes = require("./routes/protected");
+
+app.use("/api/auth", authRoutes);
+app.use("/api/protected", protectedRoutes);
+
 const PORT = process.env.PORT || 5000;
-
-app.get("/", (req, res) => {
-  res.send("RBAC API running");
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
