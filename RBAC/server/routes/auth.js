@@ -11,19 +11,26 @@ const users = [];
 router.post("/register", async (req, res) => {
   const { username, password, role } = req.body;
 
-  // Check if username already exists
   const existingUser = users.find((u) => u.username === username);
   if (existingUser) {
     return res.status(409).json({ message: "User already exists" });
   }
 
-  // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = { username, password: hashedPassword, role };
+  users.push(newUser);
 
-  // Add user to the "database"
-  users.push({ username, password: hashedPassword, role });
+  //  Generate token right after registration
+  const token = jwt.sign(
+    { username: newUser.username, role: newUser.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
 
-  res.status(201).json({ message: "User registered successfully" });
+  res.status(201).json({
+    message: "User registered successfully",
+    token, //  Token returned to client
+  });
 });
 
 // LOGIN route
