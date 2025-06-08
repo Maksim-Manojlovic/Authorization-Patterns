@@ -4,42 +4,42 @@ const bcrypt = require("bcrypt");
 
 const router = express.Router();
 
-// Fake in-memory user database (hashed passwords)
-const users = [
-  {
-    username: "admin",
-    password: bcrypt.hashSync("admin123", 10),
-    role: "admin",
-  },
-  {
-    username: "user",
-    password: bcrypt.hashSync("user123", 10),
-    role: "user",
-  },
-  {
-    username: "guest",
-    password: bcrypt.hashSync("guest123", 10),
-    role: "guest",
-  },
-];
+// Fake in-memory user database
+const users = [];
 
-// Login route
+// REGISTER route
+router.post("/register", async (req, res) => {
+  const { username, password, role } = req.body;
+
+  // Check if username already exists
+  const existingUser = users.find((u) => u.username === username);
+  if (existingUser) {
+    return res.status(409).json({ message: "User already exists" });
+  }
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Add user to the "database"
+  users.push({ username, password: hashedPassword, role });
+
+  res.status(201).json({ message: "User registered successfully" });
+});
+
+// LOGIN route
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  // Check if user exists
   const user = users.find((u) => u.username === username);
   if (!user) {
     return res.status(401).json({ message: "Invalid username or password" });
   }
 
-  // Compare password with hashed version
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return res.status(401).json({ message: "Invalid username or password" });
   }
 
-  // Generate JWT
   const token = jwt.sign(
     { username: user.username, role: user.role },
     process.env.JWT_SECRET,
