@@ -11,26 +11,37 @@ const users = [];
 router.post("/register", async (req, res) => {
   const { username, password, role } = req.body;
 
+  // Check for missing fields
+  if (!username || !password || !role) {
+    return res
+      .status(400)
+      .json({ message: "Username, password, and role are required" });
+  }
+
   const existingUser = users.find((u) => u.username === username);
   if (existingUser) {
     return res.status(409).json({ message: "User already exists" });
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = { username, password: hashedPassword, role };
-  users.push(newUser);
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = { username, password: hashedPassword, role };
+    users.push(newUser);
 
-  //  Generate token right after registration
-  const token = jwt.sign(
-    { username: newUser.username, role: newUser.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+    const token = jwt.sign(
+      { username: newUser.username, role: newUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-  res.status(201).json({
-    message: "User registered successfully",
-    token, //  Token returned to client
-  });
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error while registering user" });
+  }
 });
 
 // LOGIN route
