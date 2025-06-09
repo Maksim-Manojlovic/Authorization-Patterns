@@ -1,36 +1,42 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 const LoginForm = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("guest");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          username,
+          password,
+        }
+      );
 
-      const { token } = res.data;
+      const { token } = response.data;
       login({ username, role }, token);
-
       alert("Logged in successfully!");
+      navigate("/dashboard");
     } catch (err) {
       alert("Login failed");
-      console.error(err);
+      console.log(err);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Login</h2>
+
       <div>
         <label>Username: </label>
         <input
