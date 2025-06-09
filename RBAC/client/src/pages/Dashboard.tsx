@@ -1,7 +1,14 @@
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   if (!user) {
     return <p>Unauthorized access. Please log in.</p>;
@@ -32,6 +39,8 @@ const Dashboard = () => {
           <p>You have read-only access.</p>
         </div>
       )}
+
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };
