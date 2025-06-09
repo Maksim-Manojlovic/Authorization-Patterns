@@ -1,16 +1,19 @@
-import React from "react";
+import { useAuth } from "../context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 type ProtectedRouteProps = {
   allowedRoles: string[];
 };
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
-  // You can later add logic to check role from context or localStorage
-  const userRole = "admin"; // example static role
+const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
+  const { user } = useAuth();
 
-  if (!allowedRoles.includes(userRole)) {
-    return <Navigate to="/login" />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!allowedRoles.includes(user.role)) {
+    return <div style={{ padding: "2rem", color: "red" }}>Unauthorized</div>;
   }
 
   return <Outlet />;
