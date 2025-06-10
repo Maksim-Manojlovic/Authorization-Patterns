@@ -38,8 +38,9 @@ const LoginForm = () => {
       <h2>Login</h2>
 
       <div>
-        <label>Username: </label>
+        <label htmlFor="username">Username: </label>
         <input
+          id="username"
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -48,8 +49,9 @@ const LoginForm = () => {
       </div>
 
       <div>
-        <label>Password: </label>
+        <label htmlFor="password">Password: </label>
         <input
+          id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -58,8 +60,12 @@ const LoginForm = () => {
       </div>
 
       <div>
-        <label>Role: </label>
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <label htmlFor="role">Role: </label>
+        <select
+          id="role"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        >
           <option value="admin">Admin</option>
           <option value="user">User</option>
           <option value="guest">Guest</option>
