@@ -1,7 +1,7 @@
 type User = {
   username: string;
-  password: string; // u realnim aplikacijama ovo mora biti hashirano
-  attributes: Record<string, any>; // npr. age, location, department...
+  password: string;
+  attributes: Record<string, any>;
 };
 
 const users: User[] = [];
