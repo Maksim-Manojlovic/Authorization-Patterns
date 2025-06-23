@@ -17,17 +17,19 @@ declare global {
 }
 
 export const checkAttribute = ({ attribute, value }: AttributeCheckOptions) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const user = req.body.user || req.user; // u realnosti dolazi iz JWT-a ili sesije
+  return (req: Request, res: Response, next: NextFunction): void => {
+    const user = req.body.user || req.user;
 
     if (!user || !user.attributes) {
-      return res.status(403).json({ message: "User attributes not found." });
+      res.status(403).json({ message: "User attributes not found." });
+      return;
     }
 
     if (user.attributes[attribute] !== value) {
-      return res
+      res
         .status(403)
         .json({ message: "Access denied: insufficient attributes." });
+      return;
     }
 
     next();
