@@ -1,12 +1,14 @@
 import express from "express";
 import { checkAttribute } from "../middleware/abacMiddleware";
+import { verifyToken } from "../middleware/authMiddleware"; // koristi verifyToken
 
 const router = express.Router();
 
-// Primer: dozvoljeno samo korisnicima sa role === "admin"
+// Prvo JWT provera, onda ABAC check
 router.get(
   "/admin-only",
-  checkAttribute({ attribute: "role", value: "admin" }),
+  verifyToken, // autentikacija (JWT)
+  checkAttribute({ attribute: "role", value: "admin" }), // autorizacija (ABAC)
   (req, res) => {
     res.json({ message: "Welcome, admin!" });
   }
