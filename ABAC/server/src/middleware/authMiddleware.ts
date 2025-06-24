@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -7,26 +7,27 @@ export const verifyToken = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   const authHeader = req.headers.authorization;
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided." });
+    res.status(401).json({ message: "No token provided." });
+    return;
   }
 
   const token = authHeader.split(" ")[1];
   const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error("JWT_SECRET not defined");
+
+  if (!secret) {
+    throw new Error("JWT_SECRET not defined in .env");
+  }
 
   try {
     const decoded = jwt.verify(token, secret);
-
-    if (typeof decoded === "string") {
-      return res.status(401).json({ message: "Invalid token payload." });
-    }
-
-    req.user = decoded as JwtPayload; // ovo sad zna TypeScript da je objekt
-    next();
+    req.user = decoded as any; // Cast ako koristiš custom payload
+    next(); // ✅ ništa se ne vraća, samo poziv next
   } catch (err) {
-    return res.status(401).json({ message: "Invalid token." });
+    res.status(403).json({ message: "Invalid or expired token." });
+    return;
   }
 };
