@@ -18,7 +18,9 @@ declare global {
 
 export const checkAttribute = ({ attribute, value }: AttributeCheckOptions) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    const user = req.body.user || req.user;
+    console.log("user in ABAC middleware:", req.user); // 👈 dodaj ovo
+
+    const user = req.user;
 
     if (!user || !user.attributes) {
       res.status(403).json({ message: "User attributes not found." });
