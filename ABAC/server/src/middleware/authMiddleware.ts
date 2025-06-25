@@ -24,8 +24,8 @@ export const verifyToken = (
 
   try {
     const decoded = jwt.verify(token, secret);
-    req.user = decoded as any; // Cast ako koristiš custom payload
-    next(); // ✅ ništa se ne vraća, samo poziv next
+    req.user = decoded as any;
+    next();
   } catch (err) {
     res.status(403).json({ message: "Invalid or expired token." });
     return;

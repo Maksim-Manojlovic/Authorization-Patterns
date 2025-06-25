@@ -33,6 +33,12 @@ beforeAll(async () => {
   userToken = userLogin.body.token;
 });
 
+afterAll((done) => {
+  // Zatvori server ako koristiš app.listen u index.ts
+  const server = app.listen();
+  server.close(done);
+});
+
 describe("Protected Routes", () => {
   it("should allow admin to access /admin-only", async () => {
     const res = await request(app)
