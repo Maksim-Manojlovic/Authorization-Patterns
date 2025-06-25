@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../src/index";
+import app from "../src/app";
 
 const adminUser = {
   username: "admin_user",
