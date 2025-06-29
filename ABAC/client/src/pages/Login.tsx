@@ -22,12 +22,18 @@ export default function Login() {
 
   return (
     <div>
-      <h1>Login</h1>
-      <select value={role} onChange={(e) => setRole(e.target.value)}>
+      <h1 data-testid="login-title">Login</h1>
+      <select
+        value={role}
+        onChange={(e) => setRole(e.target.value)}
+        data-testid="role-select"
+      >
         <option value="admin">Admin</option>
         <option value="user">User</option>
       </select>
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogin} data-testid="login-button">
+        Login
+      </button>
     </div>
   );
 }
