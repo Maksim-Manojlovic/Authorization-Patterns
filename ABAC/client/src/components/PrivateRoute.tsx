@@ -1,19 +1,23 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 interface PrivateRouteProps {
-  children: React.ReactNode;
+  children: JSX.Element;
+  requiredRole?: string;
 }
 
-export default function PrivateRoute({ children }: PrivateRouteProps) {
-  const isAuthenticated = false; // TODO: Replace with actual auth check
-  const navigate = useNavigate();
+export default function PrivateRoute({
+  children,
+  requiredRole,
+}: PrivateRouteProps) {
+  const { user } = useAuth();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
+  const isAuthenticated = !!user;
+  const hasRequiredRole = requiredRole ? user?.role === requiredRole : true;
 
-  return isAuthenticated ? children : null;
+  if (!isAuthenticated || !hasRequiredRole) {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
 }
