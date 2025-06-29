@@ -1,11 +1,19 @@
-import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface PrivateRouteProps {
-  children: JSX.Element;
+  children: React.ReactNode;
 }
 
 export default function PrivateRoute({ children }: PrivateRouteProps) {
-  const isAuthenticated = false; // placeholder
+  const isAuthenticated = false; // TODO: Replace with actual auth check
+  const navigate = useNavigate();
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
+
+  return isAuthenticated ? children : null;
 }
